@@ -55,11 +55,16 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
         
         coverThumbSelectorView.thumbBorderColor = YPConfig.colors.coverSelectorBorderColor
         
-        trimBottomItem.textLabel.text = YPConfig.wordings.trim
-        coverBottomItem.textLabel.text = YPConfig.wordings.cover
-
-        trimBottomItem.button.addTarget(self, action: #selector(selectTrim), for: .touchUpInside)
-        coverBottomItem.button.addTarget(self, action: #selector(selectCover), for: .touchUpInside)
+        if YPConfig.video.trimmerHideCover {
+            trimBottomItem.isHidden = true
+            coverBottomItem.isHidden = true
+        } else {
+            trimBottomItem.textLabel.text = YPConfig.wordings.trim
+            coverBottomItem.textLabel.text = YPConfig.wordings.cover
+            
+            trimBottomItem.button.addTarget(self, action: #selector(selectTrim), for: .touchUpInside)
+            coverBottomItem.button.addTarget(self, action: #selector(selectCover), for: .touchUpInside)
+        }
         
         // Remove the default and add a notification to repeat playback from the start
         videoView.removeReachEndObserver()
@@ -93,8 +98,15 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
         coverThumbSelectorView.asset = inputAsset
         coverThumbSelectorView.delegate = self
         
-        selectTrim()
+        if !YPConfig.video.trimmerHideCover {
+            selectTrim()
+        } else {
+            title = YPConfig.wordings.trim
+        }
+        
+        startPlaybackTimeChecker()
         videoView.loadVideo(inputVideo)
+        videoView.play()
 
         super.viewDidAppear(animated)
     }
@@ -246,6 +258,10 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
                                   toleranceBefore: CMTime.zero,
                                   toleranceAfter: CMTime.zero)
             trimmerView.seek(to: startTime)
+        }
+        
+        if videoView.startTime != startTime {
+            videoView.startTime = startTime
         }
     }
 }

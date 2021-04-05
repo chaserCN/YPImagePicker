@@ -271,6 +271,8 @@ public struct YPConfigVideo {
     /// The minimum duration allowed for the trimming.
     /// The handles won't pan further if the minimum duration is attained.
     public var trimmerMinDuration: Double = 3.0
+    
+    public var trimmerHideCover = false
 
     /// Defines if the user skips the trimer stage,
     /// the video will be trimmed automatically to the maximum value of trimmerMaxDuration.
