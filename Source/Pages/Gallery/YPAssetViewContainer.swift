@@ -24,6 +24,7 @@ class YPAssetViewContainer: UIView {
     
     private let spinner = UIActivityIndicatorView(style: .white)
     private var shouldCropToSquare = YPConfig.library.isSquareByDefault
+    private var squareFixFactor = YPConfig.library.squareFixFactor
     private var isMultipleSelection = false
 
     public var itemOverlayType = YPConfig.library.itemOverlayType
@@ -102,7 +103,7 @@ class YPAssetViewContainer: UIView {
             let z = zoomableView.zoomScale
             shouldCropToSquare = (z >= 1 && z < zoomableView.squaredZoomScale)
         }
-        zoomableView?.fitImage(shouldCropToSquare, animated: true)
+        zoomableView?.fitImage(shouldCropToSquare, squareFixFactor: squareFixFactor, animated: true)
     }
     
     public func refreshSquareCropButton() {
@@ -116,7 +117,7 @@ class YPAssetViewContainer: UIView {
         }
         
         let shouldFit = YPConfig.library.onlySquare ? true : shouldCropToSquare
-        zoomableView?.fitImage(shouldFit)
+        zoomableView?.fitImage(shouldFit, squareFixFactor: squareFixFactor)
         zoomableView?.layoutSubviews()
     }
     
