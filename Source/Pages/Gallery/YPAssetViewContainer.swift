@@ -28,6 +28,8 @@ class YPAssetViewContainer: UIView {
     private var squareFixFactor = YPConfig.library.squareFixFactor
     private var isMultipleSelection = false
 
+    private var circleLayer: CAShapeLayer?
+
     public var itemOverlayType = YPConfig.library.itemOverlayType
     
     override func awakeFromNib() {
@@ -36,16 +38,21 @@ class YPAssetViewContainer: UIView {
         switch itemOverlayType {
         case .grid:
             itemOverlay = YPGridView()
-        default:
+        case .circle:
+            circleLayer = CAShapeLayer()
+        case .none:
             break
         }
-        
+
         if let itemOverlay = itemOverlay {
             addSubview(itemOverlay)
             itemOverlay.frame = frame
             clipsToBounds = true
-            
-            itemOverlay.alpha = 0
+        }
+
+        if let circleLayer = circleLayer {
+            updateCircleLayer()
+            self.layer.addSublayer(circleLayer)
         }
         
         for sv in subviews {
@@ -94,7 +101,31 @@ class YPAssetViewContainer: UIView {
         multipleSelectionButton-15-|
         multipleSelectionButton.setImage(YPConfig.icons.multipleSelectionOffIcon, for: .normal)
         multipleSelectionButton.Bottom == zoomableView!.Bottom - 15
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        updateCircleLayer()
+    }
+    
+    fileprivate func updateCircleLayer() {
+        guard let shapeLayer = circleLayer else {return}
         
+        let center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
+        let minLength = min(bounds.width, bounds.height)
+        let radians = Measurement(value: 360, unit: UnitAngle.degrees).converted(to: .radians).value
+        
+        let circlePath = UIBezierPath(arcCenter: center,
+                                      radius: minLength / 2,
+                                      startAngle: 0,
+                                      endAngle: CGFloat(radians),
+                                      clockwise: true)
+
+        circlePath.append(UIBezierPath(rect: bounds))
+        
+        shapeLayer.path = circlePath.cgPath
+        shapeLayer.fillRule = .evenOdd
+        shapeLayer.fillColor = YPConfig.colors.cropOverlayColor.cgColor
     }
     
     // MARK: - Square button

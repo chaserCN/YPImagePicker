@@ -301,6 +301,7 @@ public struct YPConfigSelectionsGallery {
 public enum YPItemOverlayType {
     case none
     case grid
+    case circle
 }
 
 public enum YPlibraryMediaType {
