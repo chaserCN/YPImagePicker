@@ -24,6 +24,7 @@ final class YPAssetZoomableView: UIScrollView {
     public var videoView = YPVideoView()
     public var squaredZoomScale: CGFloat = 1
     public var minWidth: CGFloat? = YPConfig.library.minWidthForItem
+    public var squareFixFactor = YPConfig.library.squareFixFactor
     
     fileprivate var currentAsset: PHAsset?
     
@@ -36,8 +37,8 @@ final class YPAssetZoomableView: UIScrollView {
     //
     /// - Parameters:
     ///   - fit: If true - zoom to show squared. If false - show full.
-    public func fitImage(_ fit: Bool, animated isAnimated: Bool = false) {
-        squaredZoomScale = calculateSquaredZoomScale()
+    public func fitImage(_ fit: Bool, squareFixFactor: CGFloat, animated isAnimated: Bool = false) {
+        squaredZoomScale = calculateSquaredZoomScale(squareFixFactor: squareFixFactor)
         if fit {
             setZoomScale(squaredZoomScale, animated: isAnimated)
         } else {
@@ -212,7 +213,7 @@ fileprivate extension YPAssetZoomableView {
     }
     
     /// Calculate zoom scale which will fit the image to square
-    func calculateSquaredZoomScale() -> CGFloat {
+    func calculateSquaredZoomScale(squareFixFactor: CGFloat) -> CGFloat {
         guard let image = assetImageView.image else {
             ypLog("No image"); return 1.0
         }
@@ -224,7 +225,7 @@ fileprivate extension YPAssetZoomableView {
         if w > h { // Landscape
             squareZoomScale = (w / h)
         } else if h > w { // Portrait
-            squareZoomScale = (h / w)
+            squareZoomScale = squareFixFactor * (h / w)
         }
         
         return squareZoomScale
@@ -263,7 +264,7 @@ extension YPAssetZoomableView: UIScrollViewDelegate {
         
         // prevent to zoom out
         if YPConfig.library.onlySquare && scale < squaredZoomScale {
-            self.fitImage(true, animated: true)
+            self.fitImage(true, squareFixFactor: squareFixFactor, animated: true)
         }
         
         myDelegate?.ypAssetZoomableViewScrollViewDidEndZooming()

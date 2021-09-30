@@ -19,6 +19,8 @@ public class YPVideoView: UIView {
     internal let playerLayer = AVPlayerLayer()
     internal var previewImageView = UIImageView()
     
+    var startTime: CMTime = .zero
+    
     public var player: AVPlayer {
         guard let player = playerLayer.player else {
             return AVPlayer()
@@ -75,7 +77,7 @@ public class YPVideoView: UIView {
     
     @objc public func playerItemDidReachEnd(_ note: Notification) {
         player.actionAtItemEnd = .none
-        player.seek(to: CMTime.zero)
+        player.seek(to: startTime, toleranceBefore: .zero, toleranceAfter: .zero)
         player.play()
     }
 }
@@ -125,7 +127,7 @@ extension YPVideoView {
     
     public func stop() {
         player.pause()
-        player.seek(to: CMTime.zero)
+        player.seek(to: startTime, toleranceBefore: .zero, toleranceAfter: .zero)
         showPlayImage(show: true)
         removeReachEndObserver()
     }

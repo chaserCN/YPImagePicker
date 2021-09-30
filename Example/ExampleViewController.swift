@@ -16,10 +16,10 @@ class ExampleViewController: UIViewController {
 
     lazy var selectedImageV : UIImageView = {
         let imageView = UIImageView(frame: CGRect(x: 0,
-                                                  y: 0,
+                                                  y: 44,
                                                   width: UIScreen.main.bounds.width,
-                                                  height: UIScreen.main.bounds.height * 0.45))
-        imageView.contentMode = .scaleAspectFit
+                                                  height: UIScreen.main.bounds.width * 1.25))
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
 
@@ -93,7 +93,7 @@ class ExampleViewController: UIViewController {
         // config.usesFrontCamera = true
 
         /* Adds a Filter step in the photo taking process. Defaults to true */
-        // config.showsFilters = false
+        config.showsPhotoFilters = false
 
         /* Manage filters by yourself */
         // config.filters = [YPFilter(name: "Mono", coreImageFilterName: "CIPhotoEffectMono"),
@@ -135,7 +135,7 @@ class ExampleViewController: UIViewController {
         config.video.libraryTimeLimit = 500.0
 
         /* Adds a Crop step in the photo taking process, after filters. Defaults to .none */
-        config.showsCrop = .rectangle(ratio: (16/9))
+        config.showsCrop = .circle //.rectangle(ratio: (16/9))
 
         /* Changes the crop mask color */
         // config.colors.cropOverlayColor = .green
@@ -194,7 +194,7 @@ class ExampleViewController: UIViewController {
 		//config.fonts.navigationBarTitleFont = UIFont.systemFont(ofSize: 22.0, weight: .heavy)
 		//config.fonts.leftBarButtonFont = UIFont.systemFont(ofSize: 22.0, weight: .heavy)
 
-        let picker = YPImagePicker(configuration: config)
+        let picker = YPImagePicker(configuration: YPImagePickerConfiguration.shoppily.photoAndVideo())
 
         picker.imagePickerDelegate = self
 
@@ -280,5 +280,47 @@ extension ExampleViewController: YPImagePickerDelegate {
 
     func shouldAddToSelection(indexPath: IndexPath, numSelections: Int) -> Bool {
         return true // indexPath.row != 2
+    }
+}
+
+extension YPImagePickerConfiguration {
+    struct shoppily {
+        static func photoAndVideo() -> YPImagePickerConfiguration {
+            var config = YPImagePickerConfiguration()
+            
+            config.hidesStatusBar = false
+            config.onlySquareImagesFromCamera = false
+            config.showsPhotoFilters = false
+            //config.showsCrop = .circle
+            config.screens = [.library, .photo, .video]
+            config.albumName = (Bundle.main.infoDictionary?["CFBundleName"] as? String) ?? "Shoppily"
+            
+            // limit only the trimmer, but let the user to shoot as long video as she wants
+            config.video.minimumTimeLimit = 3
+            config.video.trimmerMinDuration = 3
+            config.video.trimmerMaxDuration = 5
+            config.video.trimmerHideCover = true
+
+            config.library.mediaType = .photoAndVideo
+            config.library.isSquareByDefault = true
+            config.library.squareFixFactor = 0.8
+
+            return config
+        }
+        
+        static func avatar(fromGallery: Bool) -> YPImagePickerConfiguration {
+            var config = YPImagePickerConfiguration()
+            
+            config.hidesStatusBar = false
+            config.onlySquareImagesFromCamera = true
+            config.showsPhotoFilters = false
+            config.screens = [fromGallery ? .library : .photo]
+            config.albumName = (Bundle.main.infoDictionary?["CFBundleName"] as? String) ?? "Shoppily"
+
+            config.library.mediaType = .photo
+            config.library.isSquareByDefault = true
+
+            return config
+        }
     }
 }

@@ -193,6 +193,8 @@ public struct YPConfigLibrary {
     /// Sets the cropping style to square or not. Ignored if `onlySquare` is true. Defaults to true.
     public var isSquareByDefault = true
     
+    public var squareFixFactor: CGFloat = 1
+    
 	/// Minimum width, to prevent selectiong too high images. Have sense if onlySquare is true and the image is portrait.
     public var minWidthForItem: CGFloat?
     
@@ -278,6 +280,8 @@ public struct YPConfigVideo {
     /// The minimum duration allowed for the trimming.
     /// The handles won't pan further if the minimum duration is attained.
     public var trimmerMinDuration: Double = 3.0
+    
+    public var trimmerHideCover = false
 
     /// Defines if the user skips the trimer stage,
     /// the video will be trimmed automatically to the maximum value of trimmerMaxDuration.
