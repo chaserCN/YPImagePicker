@@ -112,3 +112,43 @@ internal class YPCameraView: UIView, UIGestureRecognizerDelegate {
         shotButton.setImage(YPConfig.icons.capturePhotoImage, for: .normal)
     }
 }
+
+public class YPCircleLayerView: UIView {
+    private var circleLayer = CAShapeLayer()
+    
+    public init() {
+        super.init(frame: .zero)
+        updateCircleLayer()
+        layer.addSublayer(circleLayer)
+        isUserInteractionEnabled = false
+    }
+    
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        updateCircleLayer()
+    }
+    
+    private func updateCircleLayer() {
+        let shapeLayer = circleLayer
+        
+        let center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
+        let minLength = min(bounds.width, bounds.height)
+        let radians = Measurement(value: 360, unit: UnitAngle.degrees).converted(to: .radians).value
+        
+        let circlePath = UIBezierPath(arcCenter: center,
+                                      radius: minLength / 2,
+                                      startAngle: 0,
+                                      endAngle: CGFloat(radians),
+                                      clockwise: true)
+
+        circlePath.append(UIBezierPath(rect: bounds))
+        
+        shapeLayer.path = circlePath.cgPath
+        shapeLayer.fillRule = .evenOdd
+        shapeLayer.fillColor = YPConfig.colors.cropOverlayColor.cgColor
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}

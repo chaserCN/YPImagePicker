@@ -194,7 +194,7 @@ class ExampleViewController: UIViewController {
 		//config.fonts.navigationBarTitleFont = UIFont.systemFont(ofSize: 22.0, weight: .heavy)
 		//config.fonts.leftBarButtonFont = UIFont.systemFont(ofSize: 22.0, weight: .heavy)
 
-        let picker = YPImagePicker(configuration: YPImagePickerConfiguration.shoppily.photoAndVideo())
+        let picker = YPImagePicker(configuration: YPImagePickerConfiguration.shoppily.avatar(fromGallery: false))
 
         picker.imagePickerDelegate = self
 
@@ -291,7 +291,6 @@ extension YPImagePickerConfiguration {
             config.hidesStatusBar = false
             config.onlySquareImagesFromCamera = false
             config.showsPhotoFilters = false
-            //config.showsCrop = .circle
             config.screens = [.library, .photo, .video]
             config.albumName = (Bundle.main.infoDictionary?["CFBundleName"] as? String) ?? "Shoppily"
             
@@ -316,9 +315,16 @@ extension YPImagePickerConfiguration {
             config.showsPhotoFilters = false
             config.screens = [fromGallery ? .library : .photo]
             config.albumName = (Bundle.main.infoDictionary?["CFBundleName"] as? String) ?? "Shoppily"
+            config.usesFrontCamera = true
+
+            if !fromGallery {
+                config.overlayView = YPCircleLayerView()
+            }
 
             config.library.mediaType = .photo
             config.library.isSquareByDefault = true
+            config.library.onlySquare = true
+            config.library.itemOverlayType = .circle
 
             return config
         }
