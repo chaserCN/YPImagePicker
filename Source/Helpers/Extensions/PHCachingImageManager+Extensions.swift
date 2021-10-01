@@ -66,6 +66,10 @@ extension PHCachingImageManager {
                 DispatchQueue.main.async {
                     callback(image)
                 }
+            } else if let image = UIImage.emptyImage(with: CGSize(width: asset.pixelWidth, height: asset.pixelHeight)) {
+                DispatchQueue.main.async {
+                    callback(image)
+                }
             }
         }
     }
@@ -102,5 +106,14 @@ extension PHCachingImageManager {
                 callback(image, isLowRes)
             }
         }
+    }
+}
+
+private extension UIImage {
+    static func emptyImage(with size: CGSize) -> UIImage? {
+        UIGraphicsBeginImageContext(size)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image
     }
 }
