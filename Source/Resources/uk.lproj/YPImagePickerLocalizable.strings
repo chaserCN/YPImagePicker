@@ -1,5 +1,5 @@
 "YPImagePickerAlbums" = "Альбоми";
-"YPImagePickerCancel" = "Відміна";
+"YPImagePickerCancel" = "Скасувати";
 "YPImagePickerCover" = "Обкладинка";
 "YPImagePickerCrop" = "Обрізка";
 "YPImagePickerDone" = "Готово";
@@ -7,7 +7,7 @@
 "YPImagePickerLibrary" = "Бібліотека";
 "YPImagePickerNext" = "Далі";
 "YPImagePickerOk" = "OK"; //ignore-same-translation-warning
-"YPImagePickerPermissionDeniedPopupCancel" = "Відміна";
+"YPImagePickerPermissionDeniedPopupCancel" = "Скасувати";
 "YPImagePickerPermissionDeniedPopupGrantPermission" = "Налаштувати дозволи";
 "YPImagePickerPermissionDeniedPopupMessage" = "Будь ласка, дозвольте доступ";
 "YPImagePickerPermissionDeniedPopupTitle" = "Не вистачає повноважень";
