@@ -331,6 +331,7 @@
 		EBA37BBA26F74CE0005DAAD4 /* YPFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YPFilter.swift; sourceTree = "<group>"; };
 		EBA37BC826F757FF005DAAD4 /* Bundle+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Extensions.swift"; sourceTree = "<group>"; };
 		EBB0FF7920877A7500C84E25 /* YPVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YPVideoView.swift; sourceTree = "<group>"; };
+		EBCC115C27565AA1008457DD /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/YPImagePickerLocalizable.strings; sourceTree = "<group>"; };
 		EBD2B640207B7D7400E711C2 /* YPMediaItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YPMediaItem.swift; sourceTree = "<group>"; };
 		EBD66104208104EA00EA276E /* YPIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YPIcons.swift; sourceTree = "<group>"; };
 		EBD66106208104F400EA276E /* YPColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YPColors.swift; sourceTree = "<group>"; };
@@ -752,6 +753,7 @@
 				sv,
 				fa,
 				cs,
+				uk,
 			);
 			mainGroup = 52412A891CA6114A0073C4BE;
 			packageReferences = (
@@ -1069,6 +1071,7 @@
 				5BB46873254497250083DFEA /* sv */,
 				7222273C254C031100CAB087 /* fa */,
 				DC3DAC4526C6FCAA007FD95A /* cs */,
+				EBCC115C27565AA1008457DD /* uk */,
 			);
 			name = YPImagePickerLocalizable.strings;
 			sourceTree = "<group>";
