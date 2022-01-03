@@ -22,6 +22,8 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
     var initialStatusBarHidden = false
     weak var pickerVCDelegate: YPPickerVCDelegate?
     
+    let semaphore = DispatchSemaphore(value: 1)
+    
     override open var prefersStatusBarHidden: Bool {
         return (shouldHideStatusBar || initialStatusBarHidden) && YPConfig.hidesStatusBar
     }
@@ -170,11 +172,9 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
                 vc?.initialize()
             }
         } else if let cameraVC = vc as? YPCameraVC {
-            cameraVC.start()
+            cameraVC.start(semaphore: semaphore)
         } else if let videoVC = vc as? YPVideoCaptureVC {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                videoVC.start()
-            }
+            videoVC.start(semaphore: semaphore)
         }
 
         updateUI()
@@ -185,9 +185,9 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
         case .library:
             libraryVC?.pausePlayer()
         case .camera:
-            cameraVC?.stopCamera()
+            cameraVC?.stopCamera(semaphore: semaphore)
         case .video:
-            videoVC?.stopCamera()
+            videoVC?.stopCamera(semaphore: semaphore)
         }
     }
     
@@ -331,8 +331,8 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
     
     func stopAll() {
         libraryVC?.v.assetZoomableView.videoView.deallocate()
-        videoVC?.stopCamera()
-        cameraVC?.stopCamera()
+        videoVC?.stopCamera(semaphore: nil)
+        cameraVC?.stopCamera(semaphore: nil)
     }
 }
 

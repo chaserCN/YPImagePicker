@@ -63,13 +63,13 @@ internal final class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, 
         v.previewViewContainer.addGestureRecognizer(pinchRecongizer)
     }
     
-    func start() {
+    func start(semaphore: DispatchSemaphore?) {
         doAfterCameraPermissionCheck { [weak self] in
             guard let previewContainer = self?.v.previewViewContainer else {
                 return
             }
 
-            self?.photoCapture.start(with: previewContainer, completion: {
+            self?.photoCapture.start(semaphore: semaphore, with: previewContainer, completion: {
                 DispatchQueue.main.async {
                     self?.isInited = true
                     self?.updateFlashButtonUI()
@@ -116,8 +116,8 @@ internal final class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, 
         photoCapture.zoom(began: recognizer.state == .began, scale: recognizer.scale)
     }
 
-    func stopCamera() {
-        photoCapture.stopCamera()
+    func stopCamera(semaphore: DispatchSemaphore?) {
+        photoCapture.stopCamera(semaphore: semaphore)
     }
     
     @objc
@@ -145,7 +145,7 @@ internal final class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, 
                 return
             }
             
-            self.photoCapture.stopCamera()
+            self.photoCapture.stopCamera(semaphore: nil)
             
             var image = shotImage
             // Crop the image if the output needs to be square.

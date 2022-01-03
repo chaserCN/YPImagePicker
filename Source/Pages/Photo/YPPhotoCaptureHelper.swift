@@ -45,7 +45,7 @@ extension YPPhotoCaptureHelper {
         photoOutput.capturePhoto(with: settings, delegate: self)
     }
     
-    func start(with previewView: UIView, completion: @escaping () -> Void) {
+    func start(semaphore: DispatchSemaphore?, with previewView: UIView, completion: @escaping () -> Void) {
         self.previewView = previewView
         sessionQueue.async { [weak self] in
             guard let self = self else { return }
@@ -53,16 +53,18 @@ extension YPPhotoCaptureHelper {
             if !self.isCaptureSessionSetup {
                 self.setupCaptureSession()
             }
-            self.startCamera {
+            self.startCamera(semaphore: semaphore) {
                 completion()
             }
         }
     }
     
-    func stopCamera() {
+    func stopCamera(semaphore: DispatchSemaphore?) {
         if session.isRunning {
             sessionQueue.async { [weak self] in
+                semaphore?.wait()
                 self?.session.stopRunning()
+                semaphore?.signal()
             }
         }
     }
@@ -222,7 +224,7 @@ private extension YPPhotoCaptureHelper {
     
     // MARK: Other
     
-    private func startCamera(completion: @escaping (() -> Void)) {
+    private func startCamera(semaphore: DispatchSemaphore?, completion: @escaping (() -> Void)) {
         if !session.isRunning {
             sessionQueue.async { [weak self] in
                 // Re-apply session preset
@@ -232,9 +234,11 @@ private extension YPPhotoCaptureHelper {
                 case .notDetermined, .restricted, .denied:
                     self?.session.stopRunning()
                 case .authorized:
+                    semaphore?.wait()
                     self?.session.startRunning()
                     completion()
                     self?.tryToSetupPreview()
+                    semaphore?.signal()
                 @unknown default:
                     ypLog("unknown default reached. Check code.")
                 }

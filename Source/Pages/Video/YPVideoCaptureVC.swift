@@ -53,8 +53,9 @@ internal class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
         v.previewViewContainer.addGestureRecognizer(pinchRecongizer)
     }
 
-    func start() {
-        self.videoHelper.start(previewView: v.previewViewContainer,
+    func start(semaphore: DispatchSemaphore?) {
+        self.videoHelper.start(semaphore: semaphore,
+                               previewView: v.previewViewContainer,
                                withVideoRecordingLimit: YPConfig.video.recordingTimeLimit) { [weak self] in
             DispatchQueue.main.async {
                 self?.refreshState()
@@ -142,8 +143,8 @@ internal class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
         }
     }
 
-    public func stopCamera() {
-        videoHelper.stopCamera()
+    public func stopCamera(semaphore: DispatchSemaphore?) {
+        videoHelper.stopCamera(semaphore: semaphore)
     }
     
     // MARK: - Focus
