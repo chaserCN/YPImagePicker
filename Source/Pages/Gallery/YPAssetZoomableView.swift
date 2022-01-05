@@ -245,6 +245,15 @@ fileprivate extension YPAssetZoomableView {
         
         assetView.frame = assetFrame
     }
+    
+    public func currentCropRect(squareFixFactor: CGFloat) -> CGRect {
+        let xOffset = self.frame.height * (1 - squareFixFactor) / 2
+        let normalizedX = min(1, (self.contentOffset.x + xOffset) &/ self.contentSize.width)
+        let normalizedY = min(1, self.contentOffset.y &/ self.contentSize.height)
+        let normalizedWidth = min(1, self.frame.height * squareFixFactor / self.contentSize.width)
+        let normalizedHeight = min(1, self.frame.height / self.contentSize.height)
+        return CGRect(x: normalizedX, y: normalizedY, width: normalizedWidth, height: normalizedHeight)
+    }
 }
 
 // MARK: UIScrollViewDelegate Protocol

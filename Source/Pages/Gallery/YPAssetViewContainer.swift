@@ -144,6 +144,10 @@ class YPAssetViewContainer: UIView {
         multipleSelectionButton.setImage(image, for: .normal)
         refreshSquareCropButton()
     }
+    
+    func currentCropRect() -> CGRect {
+        zoomableView?.currentCropRect(squareFixFactor: shouldCropToSquare ? squareFixFactor : 1) ?? CGRect.zero
+    }
 }
 
 // MARK: - ZoomableViewDelegate
