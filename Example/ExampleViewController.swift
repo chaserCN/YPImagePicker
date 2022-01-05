@@ -289,7 +289,7 @@ extension YPImagePickerConfiguration {
             var config = YPImagePickerConfiguration()
             
             config.hidesStatusBar = false
-            config.onlySquareImagesFromCamera = false
+            config.proportions = .default
             config.showsPhotoFilters = false
             config.screens = [.library, .photo, .video]
             config.albumName = (Bundle.main.infoDictionary?["CFBundleName"] as? String) ?? "Shoppily"
@@ -311,7 +311,7 @@ extension YPImagePickerConfiguration {
             var config = YPImagePickerConfiguration()
             
             config.hidesStatusBar = false
-            config.onlySquareImagesFromCamera = true
+            config.proportions = .square
             config.showsPhotoFilters = false
             config.screens = [fromGallery ? .library : .photo]
             config.albumName = (Bundle.main.infoDictionary?["CFBundleName"] as? String) ?? "Shoppily"

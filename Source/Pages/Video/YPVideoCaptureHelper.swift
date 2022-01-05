@@ -327,14 +327,16 @@ extension YPVideoCaptureHelper: AVCaptureFileOutputRecordingDelegate {
             ypLog("Error: \(error)")
         }
 
-        if YPConfig.onlySquareImagesFromCamera {
-            YPVideoProcessor.cropToSquare(filePath: outputFileURL) { [weak self] url in
+        switch YPConfig.proportions {
+        case .default:
+            self.didCaptureVideo?(outputFileURL)
+        case .custom, .square:
+            YPVideoProcessor.crop(filePath: outputFileURL, proportions: YPConfig.proportions) { [weak self] url in
                 guard let _self = self, let u = url else { return }
                 _self.didCaptureVideo?(u)
             }
-        } else {
-            self.didCaptureVideo?(outputFileURL)
         }
+
         timer.invalidate()
     }
 }

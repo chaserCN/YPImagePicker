@@ -148,9 +148,14 @@ internal final class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, 
             self.photoCapture.stopCamera(semaphore: nil)
             
             var image = shotImage
-            // Crop the image if the output needs to be square.
-            if YPConfig.onlySquareImagesFromCamera {
-                image = self.cropImageToSquare(image)
+            
+            switch YPConfig.proportions {
+            case .square:
+                image = self.cropImage(image, ratio: 1)
+            case .custom(let heightToWidthRatio):
+                image = self.cropImage(image, ratio: heightToWidthRatio)
+            case .default:
+                break
             }
 
             // Flip image if taken form the front camera.
@@ -166,7 +171,7 @@ internal final class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, 
         }
     }
     
-    func cropImageToSquare(_ image: UIImage) -> UIImage {
+    func cropImage(_ image: UIImage, ratio: CGFloat) -> UIImage {
         let orientation: UIDeviceOrientation = YPDeviceOrientationHelper.shared.currentDeviceOrientation
         var imageWidth = image.size.width
         var imageHeight = image.size.height
@@ -179,9 +184,8 @@ internal final class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, 
             break
         }
         
-        // The center coordinate along Y axis
-        let rcy = imageHeight * 0.5
-        let rect = CGRect(x: rcy - imageWidth * 0.5, y: 0, width: imageWidth, height: imageWidth)
+        let newHeight = imageWidth * ratio
+        let rect = CGRect(x: (imageHeight - newHeight) * 0.5, y: 0, width: newHeight, height: imageWidth)
         let imageRef = image.cgImage?.cropping(to: rect)
         return UIImage(cgImage: imageRef!, scale: 1.0, orientation: image.imageOrientation)
     }

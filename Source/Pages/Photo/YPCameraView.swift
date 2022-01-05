@@ -52,19 +52,9 @@ internal class YPCameraView: UIView, UIGestureRecognizerDelegate {
         // Layout
         let isIphone4 = UIScreen.main.bounds.height == 480
         let sideMargin: CGFloat = isIphone4 ? 20 : 0
-        if YPConfig.onlySquareImagesFromCamera {
-            layout(
-                0,
-                |-sideMargin-previewViewContainer-sideMargin-|,
-                -2,
-                |progressBar|,
-                0,
-                |buttonsContainer|,
-                0
-            )
-            
-            previewViewContainer.heightEqualsWidth()
-        } else {
+        
+        switch YPConfig.proportions {
+        case .default:
             layout(
                 0,
                 |-sideMargin-previewViewContainer-sideMargin-|,
@@ -78,6 +68,32 @@ internal class YPCameraView: UIView, UIGestureRecognizerDelegate {
             buttonsContainer.fillHorizontally()
             buttonsContainer.height(100)
             buttonsContainer.Bottom == previewViewContainer.Bottom - 50
+        
+        case .square:
+            layout(
+                0,
+                |-sideMargin-previewViewContainer-sideMargin-|,
+                -2,
+                |progressBar|,
+                0,
+                |buttonsContainer|,
+                0
+            )
+            
+            previewViewContainer.heightEqualsWidth()
+        
+        case .custom(let heightToWidthRatio):
+            layout(
+                0,
+                |-sideMargin-previewViewContainer-sideMargin-|,
+                -2,
+                |progressBar|,
+                0,
+                |buttonsContainer|,
+                0
+            )
+            
+            previewViewContainer.Height == previewViewContainer.Width * heightToWidthRatio
         }
         
         overlayView?.followEdges(previewViewContainer)
@@ -146,6 +162,43 @@ public class YPCircleLayerView: UIView {
         shapeLayer.path = circlePath.cgPath
         shapeLayer.fillRule = .evenOdd
         shapeLayer.fillColor = YPConfig.colors.cropOverlayColor.cgColor
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+public class YPRectangleLayerView: UIView {
+    private var rectangleLayer = CAShapeLayer()
+    private let heightToWidthRatio: CGFloat
+    
+    public init(heightToWidthRatio: CGFloat) {
+        self.heightToWidthRatio = heightToWidthRatio
+
+        super.init(frame: .zero)
+        
+        updateRectangleLayer()
+        layer.addSublayer(rectangleLayer)
+        isUserInteractionEnabled = false
+    }
+    
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        updateRectangleLayer()
+    }
+    
+    private func updateRectangleLayer() {
+        let shapeLayer = rectangleLayer
+        
+        let innerRectWidth = bounds.height / heightToWidthRatio
+        let innerPath = UIBezierPath(rect: CGRect(x: (bounds.width - innerRectWidth)/2, y: 0, width: innerRectWidth, height: bounds.height))
+
+        innerPath.append(UIBezierPath(rect: bounds))
+        
+        shapeLayer.path = innerPath.cgPath
+        shapeLayer.fillRule = .evenOdd
+        shapeLayer.fillColor = UIColor.black.withAlphaComponent(0.4).cgColor
     }
     
     required init?(coder: NSCoder) {

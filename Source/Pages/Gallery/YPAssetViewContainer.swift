@@ -15,7 +15,7 @@ import AVFoundation
 class YPAssetViewContainer: UIView {
     public var zoomableView: YPAssetZoomableView?
     public var itemOverlay: UIView?
-    private var circleOverlay: YPCircleLayerView?
+    private var boundsOverlay: UIView?
     public let curtain = UIView()
     public let spinnerView = UIView()
     public let squareCropButton = UIButton()
@@ -38,7 +38,9 @@ class YPAssetViewContainer: UIView {
         case .grid:
             itemOverlay = YPGridView()
         case .circle:
-            circleOverlay = YPCircleLayerView()
+            boundsOverlay = YPCircleLayerView()
+        case .rectangle(let heightToWidthRatio):
+            boundsOverlay = YPRectangleLayerView(heightToWidthRatio: heightToWidthRatio)
         case .none:
             break
         }
@@ -49,9 +51,12 @@ class YPAssetViewContainer: UIView {
             clipsToBounds = true
         }
 
-        if let circleView = circleOverlay {
-            addSubview(circleView)
-            circleView.frame = frame
+        if let boundsOverlay = boundsOverlay {
+            addSubview(boundsOverlay)
+            boundsOverlay.frame = CGRect(x: 0,
+                                         y: 0,
+                                         width: YPImagePickerConfiguration.screenWidth,
+                                         height: YPImagePickerConfiguration.screenWidth)
         }
         
         for sv in subviews {
@@ -101,7 +106,7 @@ class YPAssetViewContainer: UIView {
         multipleSelectionButton.setImage(YPConfig.icons.multipleSelectionOffIcon, for: .normal)
         multipleSelectionButton.Bottom == zoomableView!.Bottom - 15
         
-        circleOverlay?.followEdges(zoomableView!)
+        boundsOverlay?.followEdges(zoomableView!)
     }
 
     // MARK: - Square button
@@ -110,6 +115,7 @@ class YPAssetViewContainer: UIView {
         if let zoomableView = zoomableView {
             let z = zoomableView.zoomScale
             shouldCropToSquare = (z >= 1 && z < zoomableView.squaredZoomScale)
+            boundsOverlay?.isHidden = !shouldCropToSquare
         }
         zoomableView?.fitImage(shouldCropToSquare, squareFixFactor: squareFixFactor, animated: true)
     }

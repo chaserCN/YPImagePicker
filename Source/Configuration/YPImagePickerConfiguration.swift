@@ -15,6 +15,12 @@ import Photos
 internal var YPConfig: YPImagePickerConfiguration { return YPImagePickerConfiguration.shared }
 
 public struct YPImagePickerConfiguration {
+    public enum Proportions {
+        case `default`
+        case square
+        case custom(heightToWidthRatio: CGFloat)
+    }
+    
     public static var shared: YPImagePickerConfiguration = YPImagePickerConfiguration()
     
     public static var widthOniPad: CGFloat = -1
@@ -57,7 +63,7 @@ public struct YPImagePickerConfiguration {
     public var isScrollToChangeModesEnabled = true
 
     /// Set this to true if you want to force the camera output to be a squared image. Defaults to true
-    public var onlySquareImagesFromCamera = true
+    public var proportions = Proportions.default
     
     /// Enables selecting the front camera by default, useful for avatars. Defaults to false
     public var usesFrontCamera = false
@@ -302,6 +308,7 @@ public enum YPItemOverlayType {
     case none
     case grid
     case circle
+    case rectangle(heightToWidthRatio: CGFloat)
 }
 
 public enum YPlibraryMediaType {
