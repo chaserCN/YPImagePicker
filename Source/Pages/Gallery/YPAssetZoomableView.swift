@@ -247,7 +247,10 @@ fileprivate extension YPAssetZoomableView {
     }
     
     public func currentCropRect(squareFixFactor: CGFloat) -> CGRect {
-        let xOffset = self.frame.height * (1 - squareFixFactor) / 2
+        var xOffset: CGFloat {
+            (min(frame.width, contentSize.width) - frame.height * squareFixFactor) / 2
+        }
+        
         let normalizedX = min(1, (self.contentOffset.x + xOffset) &/ self.contentSize.width)
         let normalizedY = min(1, self.contentOffset.y &/ self.contentSize.height)
         let normalizedWidth = min(1, self.frame.height * squareFixFactor / self.contentSize.width)
